@@ -1,0 +1,17 @@
+spring:
+  r2dbc:
+    username: postgres
+    password: postgres
+    url: r2dbc:postgresql://127.0.0.1:5432/business
+
+  data:
+    r2dbc:
+      repositories:
+        enabled: true
+
+  liquibase:
+    change-log: classpath:/db/changelog/changelog-master.yaml
+    url: jdbc:postgresql://127.0.0.1:5432/business
+    user: postgres
+    password: postgres
+
