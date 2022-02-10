@@ -9,5 +9,5 @@ public interface UserService {
     Mono<User> findUser(Long id);
     Mono<User> findUser(String username);
     Mono<User> updateUser(Long id, UserDetachedDTO userDetachedDTO);
-    Mono<Boolean> deleteUser(Long id);
+    Mono<Void> deleteUser(Long id);
 }
