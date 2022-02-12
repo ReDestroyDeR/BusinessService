@@ -15,5 +15,3 @@ spring:
     user: postgres
     password: postgres
 
-server:
-  port: 8000
