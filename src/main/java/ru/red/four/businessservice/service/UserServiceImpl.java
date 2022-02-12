@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import ru.red.four.businessservice.domain.User;
 import ru.red.four.businessservice.dto.UserDetachedDTO;
+import ru.red.four.businessservice.exception.UserAlreadyExistsException;
 import ru.red.four.businessservice.mapper.UserMapper;
 import ru.red.four.businessservice.repository.UsersRepository;
 
@@ -21,9 +22,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> createUser(UserDetachedDTO userDetachedDTO) {
-        // TODO: Web Client request to auth service and act only after callback, else, cancel.
-        // This should be in a part of single creation pipeline
-        throw new UnsupportedOperationException();
+        return usersRepository.findByUsername(userDetachedDTO.getUsername())
+                .flatMap(entity -> entity == null
+                        ? usersRepository.save(userMapper.UserDetachedDTOtoUser(userDetachedDTO))
+                        : Mono.error(new UserAlreadyExistsException()));
     }
 
     @Override
