@@ -1,6 +1,6 @@
 apiVersion: v2
 name: business-service
-description: A Helm chart for Kubernetes
+description: Business service with some CRUD
 
 # A chart can be either an 'application' or a 'library' chart.
 #
@@ -12,6 +12,8 @@ description: A Helm chart for Kubernetes
 # pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
 
+icon: https://img.shields.io/static/v1?label=service&message=Business&color=green&style=for-the-badge&logo=kubernetes
+
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
@@ -21,4 +23,4 @@ version: 0.1.0
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
-appVersion: "1.16.0"
+appVersion: "0.0.1"
