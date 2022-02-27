@@ -6,4 +6,6 @@ import ru.red.four.businessservice.domain.User;
 
 public interface UsersRepository extends ReactiveCrudRepository<User, Long> {
     Mono<User> findByUsername(String username);
+    Mono<Boolean> existsByUsername(String username);
+    Mono<Void> deleteByUsername(String username);
 }

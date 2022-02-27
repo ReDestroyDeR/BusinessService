@@ -25,23 +25,44 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> createUser(UserDetachedDTO userDetachedDTO) {
-        return usersRepository.findByUsername(userDetachedDTO.getUsername())
-                .flatMap(entity -> entity == null
-                        ? usersRepository.save(userMapper.UserDetachedDTOtoUser(userDetachedDTO))
-                        : Mono.error(new UserAlreadyExistsException()))
+        return usersRepository.existsByUsername(userDetachedDTO.getUsername())
+                .flatMap(b -> b
+                        ? Mono.error(new UserAlreadyExistsException())
+                        : usersRepository.save(userMapper.UserDetachedDTOtoUser(userDetachedDTO)))
                 .doOnSuccess(s -> log.info("Successfully created user [{}] {}", s.getId(), s.getUsername()))
                 .doOnError(e ->
                         log.info(
                                 "Failed creating user {} {}",
                                 userDetachedDTO.getUsername(),
-                                e.getMessage()
+                                e
                         )
                 );
     }
 
     @Override
-    public Mono<User> findUser(Long id) {
-        return usersRepository.findById(id);
+    public Mono<User> updateUsername(String previous_username, String new_username) {
+        return usersRepository.findByUsername(previous_username)
+                .switchIfEmpty(Mono.error(new NotFoundException()))
+                .flatMap(user -> {
+                    user.setUsername(new_username);
+                    return usersRepository.save(user).onErrorMap(UserAlreadyExistsException::new);
+                })
+                .doOnSuccess(s ->
+                        log.info(
+                                "Successfully updated username [{}] {} -> {}",
+                                s.getId(),
+                                previous_username,
+                                s.getUsername()
+                        )
+                )
+                .doOnError(e ->
+                        log.info(
+                                "Failed updating username {} -> {} {}",
+                                previous_username,
+                                new_username,
+                                e
+                        )
+                );
     }
 
     @Override
@@ -50,27 +71,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> updateUser(Long id, UserDetachedDTO userDetachedDTO) {
+    public Mono<User> updateUser(UserDetachedDTO userDetachedDTO) {
         User user = userMapper.UserDetachedDTOtoUser(userDetachedDTO);
-        user.setId(id);
-        return usersRepository.findById(id)
+        return usersRepository.findByUsername(user.getUsername())
                 .switchIfEmpty(Mono.error(new NotFoundException()))
-                .flatMap(existingUser -> usersRepository.save(user))
+                .flatMap(existingUser -> usersRepository.save(user.enrichWithId(existingUser.getId())))
                 .doOnSuccess(s -> log.info("Successfully updated user [{}] {}", s.getId(), s.getUsername()))
                 .doOnError(e ->
                         log.info(
-                                "Failed updating user [{}] {} {}",
-                                id,
+                                "Failed updating user {} {}",
                                 userDetachedDTO.getUsername(),
-                                e.getMessage()
+                                e
                         )
                 );
     }
 
     @Override
-    public Mono<Void> deleteUser(Long id) {
-        return usersRepository.deleteById(id)
-                .doOnSuccess(s -> log.info("Successfully deleted user ID {}", id))
-                .doOnError(e -> log.info("Failed deleting user ID {} {}", id, e.getMessage()));
+    public Mono<Void> deleteUser(String username) {
+        return usersRepository.deleteByUsername(username)
+                .doOnSuccess(s -> log.info("Successfully deleted user {}", username))
+                .doOnError(e -> log.info("Failed deleting user {} {}", username, e));
     }
 }

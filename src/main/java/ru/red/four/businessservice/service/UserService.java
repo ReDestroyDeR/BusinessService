@@ -1,13 +1,14 @@
 package ru.red.four.businessservice.service;
 
+import io.netty.util.AsyncMapping;
 import reactor.core.publisher.Mono;
 import ru.red.four.businessservice.domain.User;
 import ru.red.four.businessservice.dto.UserDetachedDTO;
 
 public interface UserService {
     Mono<User> createUser(UserDetachedDTO userDetachedDTO);
-    Mono<User> findUser(Long id);
+    Mono<User> updateUsername(String previous_username, String new_username);
     Mono<User> findUser(String username);
-    Mono<User> updateUser(Long id, UserDetachedDTO userDetachedDTO);
-    Mono<Void> deleteUser(Long id);
+    Mono<User> updateUser(UserDetachedDTO userDetachedDTO);
+    Mono<Void> deleteUser(String username);
 }
