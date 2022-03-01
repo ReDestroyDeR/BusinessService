@@ -5,3 +5,4 @@ cd target/dependency
 jar -xf ../*.jar
 cd ../../
 docker build .
+rm target/dependency
