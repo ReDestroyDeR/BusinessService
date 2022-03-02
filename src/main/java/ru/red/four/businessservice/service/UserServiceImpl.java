@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
                         log.info(
                                 "Failed creating user {} {}",
                                 userDetachedDTO.getUsername(),
-                                e
+                                e.getMessage()
                         )
                 );
     }
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
                                 "Failed updating username {} -> {} {}",
                                 previous_username,
                                 new_username,
-                                e
+                                e.getMessage()
                         )
                 );
     }
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
                         log.info(
                                 "Failed updating user {} {}",
                                 userDetachedDTO.getUsername(),
-                                e
+                                e.getMessage()
                         )
                 );
     }
@@ -91,6 +91,6 @@ public class UserServiceImpl implements UserService {
     public Mono<Void> deleteUser(String username) {
         return usersRepository.deleteByUsername(username)
                 .doOnSuccess(s -> log.info("Successfully deleted user {}", username))
-                .doOnError(e -> log.info("Failed deleting user {} {}", username, e));
+                .doOnError(e -> log.info("Failed deleting user {} {}", username, e.getMessage()));
     }
 }
