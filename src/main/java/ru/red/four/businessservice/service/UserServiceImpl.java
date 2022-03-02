@@ -67,7 +67,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> findUser(String username) {
-        return usersRepository.findByUsername(username);
+        return usersRepository.findByUsername(username)
+                .switchIfEmpty(Mono.error(NotFoundException::new));
     }
 
     @Override
