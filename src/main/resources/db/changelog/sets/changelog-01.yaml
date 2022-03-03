@@ -27,4 +27,4 @@ databaseChangeLog:
                   type: Varchar(1024)
               - column:
                   name: birth_date
-                  type: Datetime
+                  type: Date
